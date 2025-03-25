@@ -2,7 +2,8 @@
 
 const User = require("../../models/User");
 const UserStorage = require("../../models/UserStorage");
-const logger = require("../../config/logger")
+const logger = require("../../config/logger");
+const cookie = require("../../models/cookie");
 
 const output = {
   home: (req, res) => {
@@ -16,6 +17,10 @@ const output = {
   register: (req, res) => {
     logger.info(`GET /register 304 "회원가입 화면으로 이동"`);
     res.render("home/register")
+  },
+  gallery: (req, res) => {
+    logger.info(`GET /gallery 304 "갤러리 화면으로 이동"`);
+    res.render("home/gallery")
   }
 }
 
@@ -30,6 +35,7 @@ const process = {
       status: response.err ? 400 : 200,
     };
 
+    cookie.login_cookie();
     log(response, url);
     return res.status(url.status).json(response);
   },
@@ -43,7 +49,17 @@ const process = {
       status: response.err ? 409 : 201,
     };
 
-    log(response, url);
+    logger.info(response, url);
+    return res.status(url.status).json(response);
+  },
+  gallery: async (req, res) => {
+    const url = {
+      method: "POST",
+      path: "/gallery",
+      status: response.err ? 409 : 201,
+    };
+
+    logger.info(response, url);
     return res.status(url.status).json(response);
   }
 };
